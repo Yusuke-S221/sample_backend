@@ -14,3 +14,6 @@ use Illuminate\Http\Request;
 */
 
 Route::get('/', function () { return 'Hello World!!'; });
+Route::group(['middleware' => ['api']], function(){
+    Route::resource('articles', 'Api\ArticlesController', ['except' => ['create', 'edit']]);
+  });
