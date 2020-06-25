@@ -20,7 +20,9 @@ class ArticleTest extends TestCase
         $this->articles = factory(Article::class, 10)->create();
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function indexArticleAll(): void
     {
         $response = $this->json('GET', 'api/articles');
@@ -34,5 +36,22 @@ class ArticleTest extends TestCase
                     'title' => $this->articles[5]->title,
                     'body' => $this->articles[5]->body,
                  ]);
+    }
+
+    /**
+     * @test
+     */
+    public function createArticle(): void
+    {
+        $articleCount = Article::count();
+        $params = [
+            'title' => 'タイトル',
+            'body' => '本文'
+        ];
+
+        $response = $this->json('POST', '/api/articles', $params);
+        $response->assertStatus(201);
+
+        $this->assertSame(Article::count(), $articleCount + 1);
     }
 }
