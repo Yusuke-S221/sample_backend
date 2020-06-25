@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
-use Illuminate\Http\Request;
+use App\Http\Requests\ArticleStoreRequest;
 use App\Article;
 use App\Http\Controllers\Controller;
 
@@ -33,12 +33,27 @@ class ArticlesController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\Requests\ArticleStoreRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(ArticleStoreRequest $request)
     {
-        //
+        $article = new Article();
+        
+        \DB::beginTransaction();
+
+        try {
+            $article->fill($request->all());
+            $article->save();
+            \DB::commit();
+        } catch (\Exception $e) {
+            \Log::Error($e->getTraceAsString());
+            \DB::rollback();
+
+            return response()->json('create error', 500);
+        }
+
+        return response()->json($article, 201);
     }
 
     /**

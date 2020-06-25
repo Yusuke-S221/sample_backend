@@ -49,6 +49,7 @@ class ArticleTest extends TestCase
             'body' => '本文'
         ];
 
+        $this->withoutExceptionHandling();
         $response = $this->json('POST', '/api/articles', $params);
         $response->assertStatus(201);
 
